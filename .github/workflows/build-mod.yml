@@ -5,6 +5,9 @@ on:
   push:
     branches: [mod-build]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -53,3 +56,14 @@ jobs:
         with:
           name: kunefe-menu
           path: out/kunefe-menu.jar
+
+      - name: Jar'i depoya kaydet
+        run: |
+          cd kunefe
+          mkdir -p kunefe-menu-mod/dist
+          cp ../out/kunefe-menu.jar kunefe-menu-mod/dist/kunefe-menu.jar
+          git config user.name "build-bot"
+          git config user.email "build-bot@users.noreply.github.com"
+          git add kunefe-menu-mod/dist/kunefe-menu.jar
+          git commit -m "build: kunefe-menu.jar [skip ci]" || echo "degisiklik yok"
+          git push origin HEAD:${GITHUB_REF_NAME}
