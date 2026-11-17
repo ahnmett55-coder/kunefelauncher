@@ -139,7 +139,9 @@ jobs:
         run: |
           cd kunefe-overlay
           mkdir -p android/dist
-          cp ../ZalithLauncher/build/outputs/apk/release/*.apk android/dist/KunefeLauncher-v1-${{ inputs.arch || 'arm64' }}.apk
+          cp ../ZalithLauncher/build/outputs/apk/release/*.apk /tmp/KunefeLauncher-v1.apk
+          sha256sum /tmp/KunefeLauncher-v1.apk | tee android/dist/SHA256.txt
+          split -b 40m -d /tmp/KunefeLauncher-v1.apk android/dist/KunefeLauncher-v1.apk.part
           ls -la android/dist
           git config user.name "build-bot"
           git config user.email "build-bot@users.noreply.github.com"
