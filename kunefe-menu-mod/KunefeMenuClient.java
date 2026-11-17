@@ -5,6 +5,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
+import net.minecraft.client.network.ServerAddress;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -18,6 +22,19 @@ public class KunefeMenuClient implements ClientModInitializer {
         HudConfig.load();
         HudRenderCallback.EVENT.register((ctx, tickCounter) -> HudModules.renderAll(ctx));
         ScreenEvents.AFTER_INIT.register((client, screen, w, h) -> {
+            if (screen instanceof TitleScreen) {
+                try {
+                    Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("KünefeCraft'a Katıl"), b -> {
+                        ServerAddress addr = ServerAddress.parse(KunefeApi.SERVER_IP);
+                        ServerInfo info = new ServerInfo("KünefeCraft", KunefeApi.SERVER_IP, ServerInfo.ServerType.OTHER);
+                        ConnectScreen.connect(screen, client, addr, info, false, null);
+                    }).position(w / 2 - 100, h / 4 + 8).width(200).build());
+                    ScreenEvents.afterRender(screen).register((s2, ctx, mx, my, delta) ->
+                            ctx.drawCenteredTextWithShadow(client.textRenderer, Text.literal("KÜNEFECRAFT"), w / 2, h / 4 - 6, ORANGE));
+                } catch (Throwable ignored) {
+                }
+                return;
+            }
             if (!(screen instanceof GameMenuScreen)) return;
             try {
                 int bw = 110;

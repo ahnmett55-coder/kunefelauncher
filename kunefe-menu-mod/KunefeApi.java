@@ -17,6 +17,7 @@ import java.util.List;
 /** kunefecraft.com.tr/kp.php istemcisi (sadece okuma). */
 public final class KunefeApi {
     public static final String SITE = "https://kunefecraft.com.tr";
+    public static final String SERVER_IP = "87.232.127.49:25565";
     private static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(8)).build();
 
     private KunefeApi() {}
