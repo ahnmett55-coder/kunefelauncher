@@ -1,0 +1,55 @@
+name: Kunefe Menu Mod
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [mod-build]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dosyalarimiz
+        uses: actions/checkout@v6
+        with:
+          path: kunefe
+
+      - name: Fabric ornek sablonu (1.21.11)
+        run: git clone --depth 1 --branch 1.21.11 https://github.com/FabricMC/fabric-example-mod base
+
+      - name: Sablonu bizim modumuza cevir
+        run: |
+          cd base
+          rm -rf src/main/java src/client/java src/client/resources src/main/resources/modid.mixins.json src/main/resources/assets
+          mkdir -p src/main/resources
+          K=../kunefe
+          mkdir -p src/client/java/tr/kunefe/menu
+          cp $K/kunefe-menu-mod/*.java src/client/java/tr/kunefe/menu/
+          cp $K/kunefe-menu-mod/fabric.mod.json src/main/resources/fabric.mod.json
+          YARN=$(curl -fsSL https://meta.fabricmc.net/v2/versions/yarn/1.21.11 | python3 -c "import sys,json;print(json.load(sys.stdin)[0]['version'])")
+          echo "Yarn: $YARN"
+          sed -i "s#mappings loom.officialMojangMappings()#mappings \"net.fabricmc:yarn:${YARN}:v2\"#" build.gradle
+          sed -i 's#"modid"#"kunefemenu"#' build.gradle
+          sed -i 's#^group=.*#group=tr.kunefe#; s#^version=.*#version=1.0.0#' gradle.properties
+          grep -n "mappings\|kunefemenu" build.gradle
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Derle
+        run: |
+          cd base
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+
+      - name: Jar'i kopyala
+        run: |
+          mkdir out
+          cp base/build/libs/*[0-9].jar out/kunefe-menu.jar
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kunefe-menu
+          path: out/kunefe-menu.jar
