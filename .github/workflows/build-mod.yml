@@ -17,8 +17,8 @@ jobs:
         with:
           path: kunefe
 
-      - name: Fabric ornek sablonu (1.21.11)
-        run: git clone --depth 1 --branch 1.21.11 https://github.com/FabricMC/fabric-example-mod base
+      - name: Fabric ornek sablonu (1.21.4)
+        run: git clone --depth 1 --branch 1.21.4 https://github.com/FabricMC/fabric-example-mod base
 
       - name: Sablonu bizim modumuza cevir
         run: |
@@ -29,7 +29,7 @@ jobs:
           mkdir -p src/client/java/tr/kunefe/menu
           cp $K/kunefe-menu-mod/*.java src/client/java/tr/kunefe/menu/
           cp $K/kunefe-menu-mod/fabric.mod.json src/main/resources/fabric.mod.json
-          YARN=$(curl -fsSL https://meta.fabricmc.net/v2/versions/yarn/1.21.11 | python3 -c "import sys,json;print(json.load(sys.stdin)[0]['version'])")
+          YARN=$(curl -fsSL https://meta.fabricmc.net/v2/versions/yarn/1.21.4 | python3 -c "import sys,json;print(json.load(sys.stdin)[0]['version'])")
           echo "Yarn: $YARN"
           sed -i "s#mappings loom.officialMojangMappings()#mappings \"net.fabricmc:yarn:${YARN}:v2\"#" build.gradle
           sed -i 's#"modid"#"kunefemenu"#' build.gradle
