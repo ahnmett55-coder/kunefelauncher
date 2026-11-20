@@ -26,9 +26,7 @@ jobs:
           rm -rf src/main/java src/client/java src/client/resources src/main/resources/modid.mixins.json src/main/resources/assets
           mkdir -p src/main/resources
           K=../kunefe
-          mkdir -p src/client/java/tr/kunefe/menu
-          cp $K/kunefe-menu-mod/*.java src/client/java/tr/kunefe/menu/
-          cp $K/kunefe-menu-mod/fabric.mod.json src/main/resources/fabric.mod.json
+          cp -r $K/kunefe-menu-mod/src/* src/
           YARN=$(curl -fsSL https://meta.fabricmc.net/v2/versions/yarn/1.21.4 | python3 -c "import sys,json;print(json.load(sys.stdin)[0]['version'])")
           echo "Yarn: $YARN"
           sed -i "s#mappings loom.officialMojangMappings()#mappings \"net.fabricmc:yarn:${YARN}:v2\"#" build.gradle

@@ -1,0 +1,7 @@
+{
+  "required": false,
+  "package": "tr.kunefe.menu.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["PlayerListHudMixin","SplashOverlayMixin","ConnectScreenMixin","InGameHudMixin","HeldItemRendererMixin"],
+  "injectors": {"defaultRequire": 0}
+}

@@ -42,6 +42,11 @@ public final class HudConfig {
         MODS.put("clock", new Mod(false, 6, 70));
         MODS.put("armor", new Mod(true, 6, 90));
         MODS.put("keys", new Mod(false, 6, 170));
+        MODS.put("cps", new Mod(true, 6, 250));
+        MODS.put("combo", new Mod(false, 6, 266));
+        MODS.put("potions", new Mod(false, 6, 282));
+        MODS.put("target", new Mod(false, 120, 6));
+        MODS.put("reach", new Mod(false, 120, 22));
     }
 
     private static Path file() {
