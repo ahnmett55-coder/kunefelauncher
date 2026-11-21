@@ -24,6 +24,7 @@ public final class KunefeConfig {
         public int handX = 0;
         public int handY = 0;
         public int handZ = 0;
+        public boolean fullbright = false;
     }
 
     public static final int[] CROSS_COLORS = {0xFFFF8C00, 0xFFFFFFFF, 0xFF55FF55, 0xFFFF5555, 0xFF55AAFF, 0xFFFFFF55};

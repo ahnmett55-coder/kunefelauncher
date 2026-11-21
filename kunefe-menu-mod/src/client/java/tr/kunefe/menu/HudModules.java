@@ -46,6 +46,8 @@ public final class HudModules {
             case "potions": return "İksirler";
             case "target": return "Hedef (blok/varlık)";
             case "reach": return "Vuruş menzili";
+            case "itemcount": return "Eşya Sayacı";
+            case "shield": return "Kalkan Durumu";
             default: return id;
         }
     }
@@ -53,6 +55,7 @@ public final class HudModules {
     /** Her tick: CPS ve kombo sayaçlarını günceller. */
     public static void tick(MinecraftClient mc) {
         if (mc.options == null) return;
+        fullbright(mc);
         long now = System.currentTimeMillis();
         boolean l = mc.options.attackKey.isPressed();
         boolean r = mc.options.useKey.isPressed();
@@ -63,6 +66,23 @@ public final class HudModules {
         while (!LEFT.isEmpty() && now - LEFT.peekFirst() > 1000) LEFT.pollFirst();
         while (!RIGHT.isEmpty() && now - RIGHT.peekFirst() > 1000) RIGHT.pollFirst();
         if (combo > 0 && (now - lastHit > 2000 || (mc.player != null && mc.player.hurtTime > 0))) combo = 0;
+    }
+
+    private static boolean fbApplied;
+
+    private static void fullbright(MinecraftClient mc) {
+        if (mc.player == null) { fbApplied = false; return; }
+        if (KunefeConfig.d.fullbright) {
+            net.minecraft.entity.effect.StatusEffectInstance cur = mc.player.getStatusEffect(net.minecraft.entity.effect.StatusEffects.NIGHT_VISION);
+            if (cur == null || cur.getDuration() < 400) {
+                mc.player.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
+                        net.minecraft.entity.effect.StatusEffects.NIGHT_VISION, 1200, 0, false, false, false));
+            }
+            fbApplied = true;
+        } else if (fbApplied) {
+            mc.player.removeStatusEffect(net.minecraft.entity.effect.StatusEffects.NIGHT_VISION);
+            fbApplied = false;
+        }
     }
 
     /** Oyuncu bir varlığa vurdu. */
@@ -143,6 +163,20 @@ public final class HudModules {
                     }
                     return "Menzil: -";
                 }
+                case "itemcount": {
+                    if (mc.player == null) return "Eşya: -";
+                    ItemStack h = mc.player.getMainHandStack();
+                    if (h.isEmpty()) return "Eşya: -";
+                    int n = 0;
+                    for (int i = 0; i < mc.player.getInventory().size(); i++) {
+                        ItemStack st = mc.player.getInventory().getStack(i);
+                        if (ItemStack.areItemsAndComponentsEqual(st, h)) n += st.getCount();
+                    }
+                    return h.getName().getString() + ": " + n;
+                }
+                case "shield":
+                    if (mc.player == null) return "Kalkan: -";
+                    return "Kalkan: " + (mc.player.isBlocking() ? "AKTİF" : "pasif");
                 default:
                     return id;
             }

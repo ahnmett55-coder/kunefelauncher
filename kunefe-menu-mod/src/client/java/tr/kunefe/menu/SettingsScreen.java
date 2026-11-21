@@ -17,7 +17,8 @@ public class SettingsScreen extends Screen {
     @Override
     protected void init() {
         int cx = this.width / 2;
-        int y = 40;
+        int y = 52;
+        this.addDrawableChild(ButtonWidget.builder(Text.literal("Modüller"), b -> this.client.setScreen(new ModulesScreen(this))).position(cx - 100, y - 26).width(200).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("HUD Düzenle"), b -> this.client.setScreen(new HudEditorScreen(this))).position(cx - 100, y).width(200).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Nişangah"), b -> this.client.setScreen(new CrosshairScreen(this))).position(cx - 100, y + 26).width(200).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("El Eşyası Konumu"), b -> this.client.setScreen(new HandScreen(this))).position(cx - 100, y + 52).width(200).build());

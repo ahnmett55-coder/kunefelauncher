@@ -47,6 +47,8 @@ public final class HudConfig {
         MODS.put("potions", new Mod(false, 6, 282));
         MODS.put("target", new Mod(false, 120, 6));
         MODS.put("reach", new Mod(false, 120, 22));
+        MODS.put("itemcount", new Mod(false, 120, 38));
+        MODS.put("shield", new Mod(false, 120, 54));
     }
 
     private static Path file() {
