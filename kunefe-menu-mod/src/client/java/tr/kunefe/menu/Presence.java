@@ -27,35 +27,25 @@ public final class Presence {
         return name != null && ONLINE.contains(name.toLowerCase(Locale.ROOT));
     }
 
+    /** Launcher, çevrimiçi launcher oyuncularını oyun klasöründeki kunefe_online.txt'ye yazar; buradan okunur. */
     public static void tick(MinecraftClient mc) {
         if (mc.player == null || mc.getNetworkHandler() == null) return;
         long now = System.currentTimeMillis();
-        String me = mc.player.getName().getString();
-        if (now - lastPing > 60_000) {
-            lastPing = now;
-            ONLINE.add(me.toLowerCase(Locale.ROOT));
-            Thread t = new Thread(() -> {
-                try {
-                    KunefeApi.ping(me);
-                } catch (Exception ignored) {
+        if (now - lastFetch < 10_000) return;
+        lastFetch = now;
+        String me = mc.player.getName().getString().toLowerCase(Locale.ROOT);
+        try {
+            java.nio.file.Path f = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_online.txt");
+            Set<String> names = new java.util.HashSet<>();
+            if (java.nio.file.Files.exists(f)) {
+                for (String l : java.nio.file.Files.readAllLines(f, java.nio.charset.StandardCharsets.UTF_8)) {
+                    if (!l.isBlank()) names.add(l.trim().toLowerCase(Locale.ROOT));
                 }
-            }, "kunefe-ping");
-            t.setDaemon(true);
-            t.start();
-        }
-        if (now - lastFetch > 30_000) {
-            lastFetch = now;
-            Thread t = new Thread(() -> {
-                try {
-                    Set<String> names = KunefeApi.online();
-                    ONLINE.clear();
-                    ONLINE.addAll(names);
-                    ONLINE.add(me.toLowerCase(Locale.ROOT));
-                } catch (Exception ignored) {
-                }
-            }, "kunefe-online");
-            t.setDaemon(true);
-            t.start();
+            }
+            names.add(me);
+            ONLINE.clear();
+            ONLINE.addAll(names);
+        } catch (Exception ignored) {
         }
     }
 }
