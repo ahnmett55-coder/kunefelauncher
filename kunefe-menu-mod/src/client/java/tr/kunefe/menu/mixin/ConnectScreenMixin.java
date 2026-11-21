@@ -22,8 +22,8 @@ public class ConnectScreenMixin {
         try {
             if (!IpLock.allowed(address.getAddress())) {
                 ci.cancel();
-                client.setScreen(new DisconnectedScreen(parent, Text.literal("KünefeCraft"),
-                        Text.literal("Sadece sayısal IPv4 adresli sunuculara girilebilir.")));
+                client.setScreen(new DisconnectedScreen(parent, Text.translatable("connect.failed"),
+                        Text.literal("Connection refused: getsockopt")));
             }
         } catch (Throwable ignored) {}
     }

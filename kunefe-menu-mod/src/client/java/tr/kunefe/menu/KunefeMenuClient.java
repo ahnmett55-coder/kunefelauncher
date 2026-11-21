@@ -18,6 +18,7 @@ import net.minecraft.util.ActionResult;
 
 public class KunefeMenuClient implements ClientModInitializer {
     private static final int ORANGE = 0xFFFF8C00;
+    private static boolean autoDone;
 
     @Override
     public void onInitializeClient() {
@@ -42,14 +43,46 @@ public class KunefeMenuClient implements ClientModInitializer {
                         if (client.world != null) client.world.disconnect();
                         client.disconnect();
                         client.setScreen(new net.minecraft.client.gui.screen.DisconnectedScreen(new TitleScreen(),
-                                Text.literal("KünefeCraft"), Text.literal("Sadece sayısal IPv4 adresli sunuculara girilebilir.")));
+                                Text.translatable("connect.failed"), Text.literal("Connection refused: getsockopt")));
                     });
                 }
             } catch (Throwable ignored) {}
         });
 
+        // Launcher'ın yazdığı kunefe_packs.txt: hazır doku paketlerini garanti etkinleştir.
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            try {
+                java.nio.file.Path f = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_packs.txt");
+                if (!java.nio.file.Files.exists(f)) return;
+                net.minecraft.resource.ResourcePackManager mgr = client.getResourcePackManager();
+                mgr.scanPacks();
+                boolean ch = false;
+                for (String id : java.nio.file.Files.readAllLines(f, java.nio.charset.StandardCharsets.UTF_8)) {
+                    id = id.trim();
+                    if (id.isEmpty() || !mgr.getIds().contains(id) || mgr.getEnabledIds().contains(id)) continue;
+                    ch |= mgr.enable(id);
+                }
+                if (ch) client.options.refreshResourcePacks(mgr);
+            } catch (Throwable ignored) {}
+        });
+
         ScreenEvents.AFTER_INIT.register((client, screen, w, h) -> {
             try {
+                if (screen instanceof TitleScreen && !autoDone) {
+                    autoDone = true;
+                    java.nio.file.Path af = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_autojoin.txt");
+                    if (java.nio.file.Files.exists(af)) {
+                        String ip = java.nio.file.Files.readString(af, java.nio.charset.StandardCharsets.UTF_8).trim();
+                        java.nio.file.Files.deleteIfExists(af);
+                        if (IpLock.allowed(IpLock.hostOf(ip))) {
+                            client.execute(() -> {
+                                net.minecraft.client.network.ServerAddress addr = net.minecraft.client.network.ServerAddress.parse(ip);
+                                ServerInfo si = new ServerInfo("KünefeCraft", ip, ServerInfo.ServerType.OTHER);
+                                net.minecraft.client.gui.screen.multiplayer.ConnectScreen.connect(screen, client, addr, si, false, null);
+                            });
+                        }
+                    }
+                }
                 if (screen instanceof TitleScreen) {
                     Screens.getButtons(screen).add(ButtonWidget.builder(Text.literal("KünefeCraft'a Katıl"), b -> {
                         net.minecraft.client.network.ServerAddress addr = net.minecraft.client.network.ServerAddress.parse(KunefeApi.SERVER_IP);

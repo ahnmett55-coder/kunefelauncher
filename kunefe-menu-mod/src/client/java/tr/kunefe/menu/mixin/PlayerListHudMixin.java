@@ -16,7 +16,8 @@ public class PlayerListHudMixin {
     private void kunefe$logo(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         try {
             if (Presence.isLauncher(entry.getProfile().getName())) {
-                MutableText m = Presence.logo();
+                MutableText m = Text.empty();
+                m.append(Presence.logo());
                 m.append(cir.getReturnValue());
                 cir.setReturnValue(m);
             }
