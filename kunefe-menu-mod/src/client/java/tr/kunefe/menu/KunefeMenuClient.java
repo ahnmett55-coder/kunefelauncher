@@ -19,6 +19,8 @@ import net.minecraft.util.ActionResult;
 public class KunefeMenuClient implements ClientModInitializer {
     private static final int ORANGE = 0xFFFF8C00;
     private static boolean autoDone;
+    private static int loginIn = -1;
+    private static String loginPw;
 
     @Override
     public void onInitializeClient() {
@@ -27,6 +29,12 @@ public class KunefeMenuClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((ctx, tc) -> HudModules.renderAll(ctx));
         ClientTickEvents.END_CLIENT_TICK.register(mc -> {
             try { HudModules.tick(mc); Presence.tick(mc); } catch (Throwable ignored) {}
+            try {
+                if (loginIn > 0 && --loginIn == 0 && loginPw != null && mc.getNetworkHandler() != null) {
+                    mc.getNetworkHandler().sendChatCommand("login " + loginPw);
+                    loginPw = null;
+                }
+            } catch (Throwable ignored) {}
         });
         AttackEntityCallback.EVENT.register((p, w, h, e, hit) -> {
             if (w.isClient) HudModules.onAttack();
@@ -38,6 +46,13 @@ public class KunefeMenuClient implements ClientModInitializer {
             try {
                 ServerInfo si = client.getCurrentServerEntry();
                 if (si == null || client.isInSingleplayer()) return;
+                if (KunefeApi.SERVER_IP.equals(si.address) || si.address.equals("87.232.127.49")) {
+                    java.nio.file.Path lf = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_login.txt");
+                    if (java.nio.file.Files.exists(lf)) {
+                        String pw = java.nio.file.Files.readString(lf, java.nio.charset.StandardCharsets.UTF_8).trim();
+                        if (!pw.isEmpty()) { loginPw = pw; loginIn = 40; }
+                    }
+                }
                 if (!IpLock.allowed(IpLock.hostOf(si.address))) {
                     client.execute(() -> {
                         if (client.world != null) client.world.disconnect();
