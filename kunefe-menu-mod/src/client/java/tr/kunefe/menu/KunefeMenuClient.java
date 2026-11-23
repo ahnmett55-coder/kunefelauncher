@@ -26,6 +26,19 @@ public class KunefeMenuClient implements ClientModInitializer {
     public void onInitializeClient() {
         KunefeConfig.load();
         HudConfig.load();
+        // Hazır doku paketleri mod içinde gömülü: sürüm denetimine takılmadan her zaman etkin
+        try {
+            net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer("kunefemenu").ifPresent(mc -> {
+                String[][] packs = {{"dark_gold_gui", "Dark Gold GUI"}, {"orange_pvp", "Orange PVP"}};
+                for (String[] pk : packs) {
+                    try {
+                        net.fabricmc.fabric.api.resource.ResourceManagerHelper.registerBuiltinResourcePack(
+                                net.minecraft.util.Identifier.of("kunefemenu", pk[0]), mc, Text.literal(pk[1]),
+                                net.fabricmc.fabric.api.resource.ResourcePackActivationType.ALWAYS_ENABLED);
+                    } catch (Throwable ignored) {}
+                }
+            });
+        } catch (Throwable ignored) {}
         HudRenderCallback.EVENT.register((ctx, tc) -> HudModules.renderAll(ctx));
         ClientTickEvents.END_CLIENT_TICK.register(mc -> {
             try { HudModules.tick(mc); Presence.tick(mc); } catch (Throwable ignored) {}
@@ -46,7 +59,7 @@ public class KunefeMenuClient implements ClientModInitializer {
             try {
                 ServerInfo si = client.getCurrentServerEntry();
                 if (si == null || client.isInSingleplayer()) return;
-                if (KunefeApi.SERVER_IP.equals(si.address) || si.address.equals("87.232.127.49")) {
+                if (KunefeApi.SERVER_IP.equals(si.address)) {
                     java.nio.file.Path lf = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_login.txt");
                     if (java.nio.file.Files.exists(lf)) {
                         String pw = java.nio.file.Files.readString(lf, java.nio.charset.StandardCharsets.UTF_8).trim();

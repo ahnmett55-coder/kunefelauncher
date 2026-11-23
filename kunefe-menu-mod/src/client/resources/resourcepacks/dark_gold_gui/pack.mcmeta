@@ -1,0 +1,10 @@
+{
+ "pack": {
+  "pack_format": 46,
+  "description": "Dark Gold GUI | by royal1ce",
+  "supported_formats": {
+   "min_inclusive": 18,
+   "max_inclusive": 999
+  }
+ }
+}
