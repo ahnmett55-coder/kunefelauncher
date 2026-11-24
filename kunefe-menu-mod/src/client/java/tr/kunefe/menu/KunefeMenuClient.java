@@ -59,7 +59,7 @@ public class KunefeMenuClient implements ClientModInitializer {
             try {
                 ServerInfo si = client.getCurrentServerEntry();
                 if (si == null || client.isInSingleplayer()) return;
-                if (KunefeApi.SERVER_IP.equals(si.address)) {
+                if (KunefeApi.LOGIN_SERVER.equals(si.address)) {
                     java.nio.file.Path lf = net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("kunefe_login.txt");
                     if (java.nio.file.Files.exists(lf)) {
                         String pw = java.nio.file.Files.readString(lf, java.nio.charset.StandardCharsets.UTF_8).trim();
