@@ -1,0 +1,7 @@
+ARKADAS + MESAJLASMA (Cloudflare Worker)
+
+1) Worker'in kodunu (kunefe-online) tamamen sil, worker_sosyal.js icerigini yapistir > Deploy.
+2) KALICI olmasi icin (onerilir): Storage & databases > D1 SQL database > Create > ad: kunefe
+   Sonra Worker > Settings > Bindings > Add > D1 database > Variable name: DB > kunefe > Deploy.
+   (D1'i bulamazsan atla: mesajlar calisir ama Worker yeniden baslayinca arkadas/mesaj listesi silinir.)
+3) Launcher'da adres ayni kalir. Baska bir sey yapma.

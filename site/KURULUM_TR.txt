@@ -1,0 +1,9 @@
+SKIN SUNUCU KURULUMU
+1) skin.php dosyasını sitene (kunefecraft.com.tr/skin.php) yükle, skins/ klasörünü de (yazma izni 755/775).
+2) Minecraft sunucusuna SkinsRestorer eklentisi kur (Paper/Spigot). AuthMe ile uyumludur.
+3) Oyuncu launcher'da Skin > Kaydet > Sunucuya Gönder > Komutu Kopyala yapar, oyunda yapıştırıp Enter'a basar:
+   /skin url https://kunefecraft.com.tr/skins/<id>.png?v=N
+Not: Launcher'daki skin, kaynak paketiyle oyuncunun kendi ekranında zaten görünür; diğer oyuncular için SkinsRestorer şart.
+
+v2: kp.php ve skins.json dosyalarini siteye yukle. online.json otomatik olusur (kp.php'nin klasoru yazilabilir olmali).
+skins.json'a istedigin oyuncu adlarini ekleyerek Skin Magazasi listesini degistirebilirsin.

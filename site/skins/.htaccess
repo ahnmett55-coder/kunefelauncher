@@ -1,0 +1,6 @@
+# Sadece PNG sunulur, PHP çalıştırılmaz
+php_flag engine off
+RemoveHandler .php .phtml
+<FilesMatch "^(?!.*\.png$).*$">
+  Require all denied
+</FilesMatch>

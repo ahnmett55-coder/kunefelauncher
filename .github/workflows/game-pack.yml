@@ -1,0 +1,26 @@
+name: Game Pack
+on:
+  push:
+    branches: [win-build]
+permissions:
+  contents: write
+jobs:
+  pack:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install minecraft-launcher-lib pillow certifi
+      - name: Oyun, Java, Fabric ve modlari indir
+        env:
+          APPDATA: ${{ github.workspace }}\gamecache
+        run: python KunefeLauncher.py --prefetch
+      - run: python make_game_zip.py
+      - name: Release olarak yayinla
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete game-1.21.4 -y --cleanup-tag 2>$null
+          gh release create game-1.21.4 payload/game.zip --title "Oyun paketi 1.21.4" --notes "KunefeLauncher hazir oyun paketi (Mojang engelli aglar icin)"

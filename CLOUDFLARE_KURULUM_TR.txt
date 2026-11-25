@@ -1,0 +1,13 @@
+TAB'DA KUNEFELAUNCHER LOGOSU - CLOUDFLARE WORKER (ucretsiz, site/MySQL gerekmez)
+
+1) dash.cloudflare.com'da ucretsiz hesap ac.
+2) Sol menu: Storage & Databases > KV > "Create a namespace" > ad: kunefe-online
+3) Sol menu: Workers & Pages > Create > "Hello World" Worker > ad: kunefe-online > Deploy
+4) "Edit code" ac, icindekileri sil, worker.js dosyasinin icerigini yapistir > Deploy
+5) Worker sayfasi > Settings > Bindings > Add > KV namespace:
+      Variable name: ONLINE   (BUYUK HARF)   Namespace: kunefe-online   > Deploy
+6) Worker adresini kopyala (https://kunefe-online.HESABIN.workers.dev)
+7) KunefeLauncher.py basindaki PRESENCE_URL = "WORKER_ADRESI" yerine adresi yaz, build.bat calistir.
+   (Ya da adresi bana yaz, ben yazip zip'i yeniden gondereyim.)
+
+Test: tarayicida ADRES/online ac -> {"ok":true,"names":[]} gorunmeli.

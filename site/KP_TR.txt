@@ -1,0 +1,11 @@
+KP + ULTRACOSMETICS (herkes görür, mod gerekmez)
+1) Sunucuya UltraCosmetics (ve yetkiler için LuckPerms) kur. Oyunda /uc menu ile kozmetik menüsü açılır.
+2) server.properties: enable-rcon=true, rcon.port=25575, rcon.password=GUCLU_SIFRE (sunucuyu yeniden başlat).
+   RCON portunu internete AÇMA; sadece web sunucunun IP'sine izin ver (güvenlik duvarı).
+3) kp.sql'i çalıştır; kp.php'deki DB/ADMIN_KEY/RCON ayarlarını doldur ve siteye yükle.
+4) kp_cosmetics.perm alanlarını UltraCosmetics'in gerçek yetki adlarıyla doldur.
+5) Akış: oyuncu KP ile satın alır -> kp.php sunucuya "lp user OYUNCU permission set <perm> true" gönderir
+   -> oyuncu oyunda /uc menu'den eşyayı takar. Şapka/hayvan sunucu tarafında çizilir, herkes görür.
+   (UltraCosmetics'te "yetki yoksa eşya kilitli" davranışı ayarının açık olduğundan emin ol.)
+6) ESC menüsünde "Özelleştir" butonu: FancyMenu düzenleyicisinde butona "sohbete komut gönder" eylemi ver: /uc menu
+7) KP satışı (ödeme sonrası, sadece senin sunucu kodunda): POST kp.php a=grant key=ADMIN_KEY user=OYUNCU amount=100
